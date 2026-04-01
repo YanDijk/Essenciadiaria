@@ -1,0 +1,46 @@
+.card-devocional {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid #fde68a;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.titulo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #78350f;
+  margin-bottom: 16px;
+}
+
+.input-tema {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #fcd34d;
+  outline: none;
+}
+
+.botao-gerar {
+  background: #d97706;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.botao-gerar:hover {
+  background: #b45309;
+}
+
+.texto-devocional {
+  background: #fffbeb;
+  padding: 20px;
+  border-radius: 16px;
+  margin-top: 16px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
