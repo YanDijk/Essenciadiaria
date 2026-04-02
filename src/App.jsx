@@ -1,62 +1,57 @@
 import { useEffect, useState } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { supabase } from './lib/supabase'
-import ReactMarkdown from 'react-markdown'
 import LoginForm from './components/LoginForm'
-import GerarDevocional from './components/GerarDevocional'
-import ListaDevocionais from './components/ListaDevocionais'
+import Navbar from './components/Navbar'
+import Home from './pages/Home'
+import Biblia from './pages/Biblia'
+import Comunidade from './pages/Comunidade'
+import Planos from './pages/Planos'
+import Perfil from './pages/Perfil'
 
 export default function App() {
   const [sessao, setSessao] = useState(null)
-  const [contador, setContador] = useState(0)
+  const [carregando, setCarregando] = useState(true)
 
   useEffect(() => {
-    // Pega a sessão atual
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSessao(session)
+      setCarregando(false)
     })
-
-    // Escuta mudanças de login/logout
-    const { data: listener } = supabase.auth.onAuthStateChange((_evento, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
       setSessao(session)
     })
-
     return () => listener.subscription.unsubscribe()
   }, [])
 
-  async function sair() {
-    await supabase.auth.signOut()
+  if (carregando) {
+    return (
+      <div className="min-h-screen flex items-center justify-center"
+        style={{ background: 'var(--cor-fundo)' }}>
+        <p style={{ color: 'var(--cor-dourado)' }} className="fonte-titulo text-xl">
+          ✝ Carregando...
+        </p>
+      </div>
+    )
   }
 
-  if (!sessao) {
-    return <LoginForm />
-  }
+  if (!sessao) return <LoginForm />
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-100 to-white flex justify-center">
-      <div className="w-full max-w-xl p-4">
-        {/* Cabeçalho */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold text-amber-800">✝️ Meus Devocionais</h1>
-          <button
-            onClick={sair}
-            className="text-sm text-gray-500 hover:text-red-500 transition"
-          >
-            Sair
-          </button>
-        </div>
-
-        {/* Gerar novo devocional */}
-        <GerarDevocional
-          userId={sessao.user.id}
-          onSalvo={() => setContador(c => c + 1)}
-        />
-
-        {/* Lista de devocionais salvos */}
-        <ListaDevocionais
-          userId={sessao.user.id}
-          atualizar={contador}
-        />
+    <BrowserRouter>
+      <div className="min-h-screen pb-20 md:pl-56" style={{ background: 'var(--cor-fundo)' }}>
+        <Navbar />
+        <main className="max-w-2xl mx-auto px-4 py-6">
+          <Routes>
+            <Route path="/"           element={<Home userId={sessao.user.id} />} />
+            <Route path="/biblia"     element={<Biblia userId={sessao.user.id} />} />
+            <Route path="/comunidade" element={<Comunidade userId={sessao.user.id} sessao={sessao} />} />
+            <Route path="/planos"     element={<Planos userId={sessao.user.id} />} />
+            <Route path="/perfil"     element={<Perfil userId={sessao.user.id} sessao={sessao} />} />
+            <Route path="*"           element={<Navigate to="/" />} />
+          </Routes>
+        </main>
       </div>
-    </div>
+    </BrowserRouter>
   )
 }

@@ -1,3 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --cor-fundo: #0f1117;
+  --cor-card: #1a1f2e;
+  --cor-borda: #2a3040;
+  --cor-dourado: #c9a84c;
+  --cor-dourado-claro: #e8c97a;
+  --cor-texto: #e8e8f0;
+  --cor-texto-suave: #8890a8;
+}
+
+body {
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: 'Inter', sans-serif;
+}
+
+.fonte-titulo {
+  font-family: 'Playfair Display', serif;
+}

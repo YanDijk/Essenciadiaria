@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
-import ReactMarkdown from 'react-markdown'  // <-- adicione aqui
+import { supabase } from '../../lib/supabase'
+import ReactMarkdown from 'react-markdown'
 
 export default function ListaDevocionais({ userId, atualizar }) {
   const [devocionais, setDevocionais] = useState([])
