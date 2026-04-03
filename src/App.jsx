@@ -8,21 +8,52 @@ import Biblia from './pages/Biblia'
 import Comunidade from './pages/Comunidade'
 import Planos from './pages/Planos'
 import Perfil from './pages/Perfil'
+import Conexoes from './pages/Conexoes'
+import Admin from './pages/Admin'
 
 export default function App() {
   const [sessao, setSessao] = useState(null)
   const [carregando, setCarregando] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+useEffect(() => {
+  async function carregarSessao() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
       setSessao(session)
+
+      if (session) {
+        const { data, error } = await supabase
+          .from('perfis')
+          .select('is_admin')
+          .eq('id', session.user.id)
+          .single()
+
+        if (error) {
+          console.error('Erro ao buscar perfil:', error)
+        }
+
+        setIsAdmin(data?.is_admin || false)
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
       setCarregando(false)
-    })
-    const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
-      setSessao(session)
-    })
-    return () => listener.subscription.unsubscribe()
-  }, [])
+    }
+  }
+
+  // ✅ A função existe aqui dentro
+  carregarSessao()
+
+  const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
+    setSessao(session)
+  })
+
+  return () => listener.subscription.unsubscribe()
+}, [])
+
+
+
 
   if (carregando) {
     return (
@@ -40,14 +71,16 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen pb-20 md:pl-56" style={{ background: 'var(--cor-fundo)' }}>
-        <Navbar />
+        <Navbar isAdmin={isAdmin} />
         <main className="max-w-2xl mx-auto px-4 py-6">
           <Routes>
             <Route path="/"           element={<Home userId={sessao.user.id} />} />
             <Route path="/biblia"     element={<Biblia userId={sessao.user.id} />} />
             <Route path="/comunidade" element={<Comunidade userId={sessao.user.id} sessao={sessao} />} />
+            <Route path="/conexoes" element={<Conexoes userId={sessao.user.id} sessao={sessao} />} />
             <Route path="/planos"     element={<Planos userId={sessao.user.id} />} />
             <Route path="/perfil"     element={<Perfil userId={sessao.user.id} sessao={sessao} />} />
+            <Route path="/admin" element={isAdmin ? <Admin /> : <Navigate to="/" />} />
             <Route path="*"           element={<Navigate to="/" />} />
           </Routes>
         </main>

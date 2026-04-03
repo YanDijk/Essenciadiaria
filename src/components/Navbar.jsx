@@ -1,15 +1,20 @@
 import { Link, useLocation } from 'react-router-dom'
 
-const itens = [
-  { caminho: '/',          icone: '🏠', label: 'Início' },
-  { caminho: '/biblia',    icone: '📖', label: 'Bíblia' },
-  { caminho: '/comunidade',icone: '👥', label: 'Comunidade' },
-  { caminho: '/planos',    icone: '📅', label: 'Planos' },
-  { caminho: '/perfil',    icone: '👤', label: 'Perfil' },
-]
-
-export default function Navbar() {
+export default function Navbar({ isAdmin }) {
   const { pathname } = useLocation()
+
+  const itens = [
+    { caminho: '/',          icone: '🏠', label: 'Início' },
+    { caminho: '/biblia',    icone: '📖', label: 'Bíblia' },
+    { caminho: '/conexoes',  icone: '🤝', label: 'Conexões' }, 
+    { caminho: '/comunidade',icone: '👥', label: 'Comunidade' },
+    { caminho: '/planos',    icone: '📅', label: 'Planos' },
+    { caminho: '/perfil',    icone: '👤', label: 'Perfil' },
+
+    ...(isAdmin ? [
+      { caminho: '/admin', icone: '⚙️', label: 'Admin' }
+    ] : [])
+  ]
 
   return (
     <>
